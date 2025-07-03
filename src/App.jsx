@@ -1,54 +1,53 @@
 import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
-import ProfileCard from './components/ProfileCard';
+import ProfileCard from './components/Profilecard';
 import RepoList from './components/RepoList';
 import LanguageChart from './components/LanguageChart';
+import Loader from './components/Loader';
+import ErrorMessage from './components/ErrorMessage';
 
 function App() {
   const [username, setUsername] = useState('');
   const [userData, setUserData] = useState(null);
   const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Fetch user profile
+ 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (username === '') return;
-
-      try {
-        const res = await fetch(`https://api.github.com/users/${username}`);
-        if (!res.ok) throw new Error('User not found');
-        const data = await res.json();
-        setUserData(data);
-      } catch (error) {
-        setUserData(null);
-        console.error('Error fetching user:', error.message);
-      }
-    };
-
-    fetchUser();
-  }, [username]);
-
-  // Fetch top 5 repos
-  useEffect(() => {
-    const fetchRepos = async () => {
+    const fetchData = async () => {
       if (!username) return;
 
-      try {
-        const res = await fetch(`https://api.github.com/users/${username}/repos`);
-        const data = await res.json();
+      setLoading(true);
+      setError('');
+      setUserData(null);
+      setRepos([]);
 
-        const topRepos = data
+      try {
+       
+        const userRes = await fetch(`https://api.github.com/users/${username}`);
+        if (!userRes.ok) throw new Error('User not found');
+        const user = await userRes.json();
+        setUserData(user);
+
+        
+        const repoRes = await fetch(`https://api.github.com/users/${username}/repos`);
+        const repoData = await repoRes.json();
+
+        const topRepos = repoData
           .sort((a, b) => b.stargazers_count - a.stargazers_count)
           .slice(0, 5);
 
         setRepos(topRepos);
-      } catch (error) {
-        console.error('Error fetching repos:', error.message);
-        setRepos([]);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message || 'Something went wrong.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchRepos();
+    fetchData();
   }, [username]);
 
   return (
@@ -59,7 +58,10 @@ function App() {
 
       <SearchBar onSearch={setUsername} />
 
-      {userData && (
+      {loading && <Loader />}
+      {error && <ErrorMessage message={error} />}
+      
+      {!loading && !error && userData && (
         <>
           <ProfileCard user={userData} />
           <RepoList repos={repos} />

@@ -3,10 +3,10 @@ import { useState } from 'react';
 const SearchBar = ({ onSearch }) => {
   const [input, setInput] = useState('');
 
-  // When "Search" button is clicked
+ 
   const handleSearch = () => {
     if (input.trim() !== '') {
-      onSearch(input); // Send the username to parent (App)
+      onSearch(input); 
     }
   };
 

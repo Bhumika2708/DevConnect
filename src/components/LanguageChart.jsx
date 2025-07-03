@@ -3,14 +3,13 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 const LanguageChart = ({ repos }) => {
   if (!repos || repos.length === 0) return null;
 
-  // Step 1: Count how many times each language appears
+
   const languageCount = {};
   repos.forEach((repo) => {
     const lang = repo.language || 'Unknown';
     languageCount[lang] = (languageCount[lang] || 0) + 1;
   });
 
-  // Step 2: Convert object to array for Recharts
   const data = Object.entries(languageCount).map(([language, count]) => ({
     language,
     count,

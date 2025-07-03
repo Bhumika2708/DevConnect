@@ -3,29 +3,27 @@ const ProfileCard = ({ user }) => {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center">
-      {/* Avatar */}
+    
       <img
         src={user.avatar_url}
         alt={`${user.login}'s avatar`}
         className="w-28 h-28 rounded-full border-4 border-purple-400 mb-4"
       />
 
-      {/* Name */}
+     
       <h2 className="text-2xl font-bold text-purple-700">
         {user.name || user.login}
       </h2>
 
-      {/* Bio */}
       <p className="text-gray-600 mt-1">
         {user.bio || "This developer prefers mystery 🕵️‍♂️"}
       </p>
 
-      {/* Location */}
+   
       {user.location && (
         <p className="text-sm text-gray-500 mt-2">📍 {user.location}</p>
       )}
 
-      {/* Followers / Following */}
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="font-semibold text-purple-600">{user.followers}</p>
@@ -37,7 +35,6 @@ const ProfileCard = ({ user }) => {
         </div>
       </div>
 
-      {/* GitHub profile link */}
       <a
         href={user.html_url}
         target="_blank"

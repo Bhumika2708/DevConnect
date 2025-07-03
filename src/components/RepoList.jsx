@@ -1,41 +1,5 @@
-import { useEffect, useState } from 'react';
-
-const RepoList = ({ username }) => {
-  const [repos, setRepos] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!username) return;
-
-    const fetchRepos = async () => {
-      setLoading(true);
-
-      try {
-        const res = await fetch(`https://api.github.com/users/${username}/repos`);
-        if (!res.ok) throw new Error('Failed to fetch repos');
-        const data = await res.json();
-
-        const topRepos = data
-          .sort((a, b) => b.stargazers_count - a.stargazers_count)
-          .slice(0, 5);
-
-        setRepos(topRepos);
-      } catch (error) {
-        console.error('Error fetching repos:', error.message);
-        setRepos([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRepos();
-  }, [username]);
-
-  if (loading) {
-    return <p className="text-center mt-4 text-gray-500">Loading repos...</p>;
-  }
-
-  if (repos.length === 0) {
+const RepoList = ({ repos }) => {
+  if (!repos || repos.length === 0) {
     return <p className="text-center mt-4 text-gray-500">No repositories found.</p>;
   }
 
